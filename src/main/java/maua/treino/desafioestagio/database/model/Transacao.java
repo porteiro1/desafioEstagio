@@ -1,9 +1,8 @@
-package maua.treino.desafioestagio.model;
+package maua.treino.desafioestagio.database.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import maua.treino.desafioestagio.TipoTransacao;
-
+import maua.treino.desafioestagio.enumered.TipoTransacao;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -11,6 +10,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Transacao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
