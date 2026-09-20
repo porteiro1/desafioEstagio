@@ -9,6 +9,15 @@ export default function App() {
   const [ano, setAno] = useState("2026");
   const [resumo, setResumo] = useState(null);
 
+  const [descricao, setDescricao] = useState("");
+  const [valor, setValor] = useState("");
+  const [data, setData] = useState("");
+  const [tipo, setTipo] = useState("SAIDA");
+
+  const [salvando, setSalvando] = useState(false);
+  const [erroCadastro, setErroCadastro] = useState("");
+  const [sucessoCadastro, setSucessoCadastro] = useState("");
+
   function formatarMoeda(valor) {
     return valor.toLocaleString("pt-BR", {
       style: "currency",
@@ -62,7 +71,7 @@ export default function App() {
 
       // Busca os totais calculados pelo Spring.
       const respostaResumo = await fetch(
-        `/transacoes/resumo?ano=2026&mes=${mes}`,
+        `/transacoes/resumo?ano=${anoNumero}&mes=${mes}`,
       );
 
       if (!respostaResumo.ok) {
@@ -77,6 +86,52 @@ export default function App() {
       setErro(error.message);
     } finally {
       setCarregando(false);
+    }
+  }
+  async function criarTransacao(evento) {
+    evento.preventDefault();
+
+    if (salvando || carregando) return;
+
+    setErroCadastro("");
+    setSucessoCadastro("");
+
+    if (!descricao.trim()) {
+      setErroCadastro("Preencha a descrição.");
+      return;
+    }
+
+    setSalvando(true);
+
+    try {
+      const resposta = await fetch("/transacoes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          descricao: descricao.trim(),
+          valor: Number(valor),
+          data: data,
+          tipo: tipo,
+        }),
+      });
+
+      if (!resposta.ok) {
+        throw new Error(
+          "Não foi possível cadastrar. Confira os dados e tente novamente.",
+        );
+      }
+
+      setDescricao("");
+      setValor("");
+      setSucessoCadastro("Transação cadastrada com sucesso!");
+
+      await carregarTransacoes();
+    } catch (error) {
+      setErroCadastro(error.message);
+    } finally {
+      setSalvando(false);
     }
   }
 
@@ -94,13 +149,17 @@ export default function App() {
           step="1"
           value={ano}
           onChange={alterarAno}
-          disabled={carregando}
+          disabled={carregando || salvando}
         />
       </label>
 
       <label>
         Mês:
-        <select value={mes} onChange={alterarMes} disabled={carregando}>
+        <select
+          value={mes}
+          onChange={alterarMes}
+          disabled={carregando || salvando}
+        >
           <option value="1">Janeiro</option>
           <option value="2">Fevereiro</option>
           <option value="3">Março</option>
@@ -116,7 +175,7 @@ export default function App() {
         </select>
       </label>
 
-      <button onClick={carregarTransacoes} disabled={carregando}>
+      <button onClick={carregarTransacoes} disabled={carregando || salvando}>
         {carregando ? "Carregando..." : "Carregar transações"}
       </button>
 
@@ -163,6 +222,65 @@ export default function App() {
             </tbody>
           </table>
         ))}
+      <form onSubmit={criarTransacao}>
+        <fieldset className="cadastro" disabled={salvando || carregando}>
+          <legend>Nova transação</legend>
+
+          <label>
+            Descrição
+            <input
+              type="text"
+              value={descricao}
+              onChange={(evento) => setDescricao(evento.target.value)}
+              maxLength={255}
+              required
+            />
+          </label>
+
+          <label>
+            Valor
+            <input
+              type="number"
+              value={valor}
+              onChange={(evento) => setValor(evento.target.value)}
+              min="0.01"
+              max="9999999999.99"
+              step="0.01"
+              required
+            />
+          </label>
+
+          <label>
+            Data
+            <input
+              type="date"
+              value={data}
+              onChange={(evento) => setData(evento.target.value)}
+              min="0001-01-01"
+              max="9999-12-31"
+              required
+            />
+          </label>
+
+          <label>
+            Tipo
+            <select
+              value={tipo}
+              onChange={(evento) => setTipo(evento.target.value)}
+            >
+              <option value="ENTRADA">Entrada</option>
+              <option value="SAIDA">Saída</option>
+            </select>
+          </label>
+
+          <button type="submit">
+            {salvando ? "Salvando..." : "Cadastrar transação"}
+          </button>
+        </fieldset>
+
+        {erroCadastro && <p role="alert">{erroCadastro}</p>}
+        {sucessoCadastro && <p role="status">{sucessoCadastro}</p>}
+      </form>
     </main>
   );
 }

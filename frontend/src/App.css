@@ -199,3 +199,14 @@ th:last-child,
 td:last-child {
   text-align: right;
 }
+.cadastro {
+  display: grid;
+  gap: 12px;
+  margin-top: 24px;
+  text-align: left;
+}
+
+.cadastro label {
+  display: grid;
+  gap: 4px;
+}}
