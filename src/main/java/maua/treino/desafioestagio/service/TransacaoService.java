@@ -4,8 +4,11 @@ import lombok.RequiredArgsConstructor;
 import maua.treino.desafioestagio.database.model.Transacao;
 import maua.treino.desafioestagio.database.repository.TransacaoRepository;
 import maua.treino.desafioestagio.dto.request.TransacaoRequest;
+import maua.treino.desafioestagio.dto.response.ResumoMensalResponse;
+import maua.treino.desafioestagio.enumered.TipoTransacao;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
@@ -33,5 +36,23 @@ public class TransacaoService {
 
         return repository.findByDataBetweenOrderByDataDesc(inicio,fim);
 
+    }
+
+    public ResumoMensalResponse resumirMes(int ano, int mes){
+        List<Transacao> transacoes = listaPorMes(ano,mes);
+
+        BigDecimal totalEntradas = BigDecimal.ZERO;
+        BigDecimal totalSaidas = BigDecimal.ZERO;
+
+        for(Transacao transacao: transacoes){
+            if (transacao.getTipo().equals(TipoTransacao.ENTRADA)){
+                totalEntradas = totalEntradas.add(transacao.getValor());
+            }else {
+                totalSaidas = totalSaidas.add(transacao.getValor());
+            }
+        }
+        BigDecimal saldo = totalEntradas.subtract(totalSaidas);
+
+        return new ResumoMensalResponse(totalEntradas,totalSaidas,saldo);
     }
 }
