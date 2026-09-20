@@ -29,6 +29,7 @@ export default function App() {
     const [ano, mes, dia] = data.split("-");
     return `${dia}/${mes}/${ano}`;
   }
+
   function alterarMes(evento) {
     setMes(evento.target.value);
     setTransacoes(null);
@@ -50,13 +51,13 @@ export default function App() {
       setErro("Informe um ano inteiro entre 1 e 9999.");
       return;
     }
+
     setCarregando(true);
     setErro("");
     setTransacoes(null);
     setResumo(null);
 
     try {
-      // Busca a lista de transações.
       const respostaTransacoes = await fetch(
         `/transacoes?ano=${anoNumero}&mes=${mes}`,
       );
@@ -69,7 +70,6 @@ export default function App() {
 
       const dadosTransacoes = await respostaTransacoes.json();
 
-      // Busca os totais calculados pelo Spring.
       const respostaResumo = await fetch(
         `/transacoes/resumo?ano=${anoNumero}&mes=${mes}`,
       );
@@ -88,6 +88,7 @@ export default function App() {
       setCarregando(false);
     }
   }
+
   async function criarTransacao(evento) {
     evento.preventDefault();
 
@@ -136,151 +137,237 @@ export default function App() {
   }
 
   return (
-    <main>
-      <h1>Controle financeiro</h1>
-      <h2>Transações de {ano}</h2>
+    <main className="pagina">
+      <header className="cabecalho">
+        <p className="sobretitulo">Visão mensal</p>
+        <h1>Controle financeiro</h1>
+        <p className="texto-secundario">
+          Consulte seu saldo e registre novas movimentações.
+        </p>
+      </header>
 
-      <label>
-        Ano:
-        <input
-          type="number"
-          min="1"
-          max="9999"
-          step="1"
-          value={ano}
-          onChange={alterarAno}
-          disabled={carregando || salvando}
-        />
-      </label>
-
-      <label>
-        Mês:
-        <select
-          value={mes}
-          onChange={alterarMes}
-          disabled={carregando || salvando}
-        >
-          <option value="1">Janeiro</option>
-          <option value="2">Fevereiro</option>
-          <option value="3">Março</option>
-          <option value="4">Abril</option>
-          <option value="5">Maio</option>
-          <option value="6">Junho</option>
-          <option value="7">Julho</option>
-          <option value="8">Agosto</option>
-          <option value="9">Setembro</option>
-          <option value="10">Outubro</option>
-          <option value="11">Novembro</option>
-          <option value="12">Dezembro</option>
-        </select>
-      </label>
-
-      <button onClick={carregarTransacoes} disabled={carregando || salvando}>
-        {carregando ? "Carregando..." : "Carregar transações"}
-      </button>
-
-      {erro && <p role="alert">{erro}</p>}
-
-      {resumo !== null && (
+      <section className="painel filtros" aria-labelledby="titulo-periodo">
         <div>
-          <p>
-            Entradas: <strong>{formatarMoeda(resumo.totalEntradas)}</strong>
-          </p>
-
-          <p>
-            Saídas: <strong>{formatarMoeda(resumo.totalSaidas)}</strong>
-          </p>
-
-          <p>
-            Saldo: <strong>{formatarMoeda(resumo.saldo)}</strong>
-          </p>
+          <h2 id="titulo-periodo">Consultar período</h2>
+          <p className="texto-secundario">Escolha o ano e o mês.</p>
         </div>
-      )}
-      {transacoes !== null &&
-        (transacoes.length === 0 ? (
-          <p>Nenhuma transação encontrada neste mês.</p>
-        ) : (
-          <table>
-            <thead>
-              <tr>
-                <th scope="col">Data</th>
-                <th scope="col">Descrição</th>
-                <th scope="col">Tipo</th>
-                <th scope="col">Valor</th>
-              </tr>
-            </thead>
 
-            <tbody>
-              {transacoes.map((transacao) => (
-                <tr key={transacao.id}>
-                  <td>{formatarData(transacao.data)}</td>
-                  <td>{transacao.descricao}</td>
-                  <td>{transacao.tipo === "ENTRADA" ? "Entrada" : "Saída"}</td>
-                  <td>{formatarMoeda(transacao.valor)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ))}
-      <form onSubmit={criarTransacao}>
-        <fieldset className="cadastro" disabled={salvando || carregando}>
-          <legend>Nova transação</legend>
-
+        <div className="filtros-campos">
           <label>
-            Descrição
-            <input
-              type="text"
-              value={descricao}
-              onChange={(evento) => setDescricao(evento.target.value)}
-              maxLength={255}
-              required
-            />
-          </label>
-
-          <label>
-            Valor
+            Ano
             <input
               type="number"
-              value={valor}
-              onChange={(evento) => setValor(evento.target.value)}
-              min="0.01"
-              max="9999999999.99"
-              step="0.01"
-              required
+              min="1"
+              max="9999"
+              step="1"
+              value={ano}
+              onChange={alterarAno}
+              disabled={carregando || salvando}
             />
           </label>
 
           <label>
-            Data
-            <input
-              type="date"
-              value={data}
-              onChange={(evento) => setData(evento.target.value)}
-              min="0001-01-01"
-              max="9999-12-31"
-              required
-            />
-          </label>
-
-          <label>
-            Tipo
+            Mês
             <select
-              value={tipo}
-              onChange={(evento) => setTipo(evento.target.value)}
+              value={mes}
+              onChange={alterarMes}
+              disabled={carregando || salvando}
             >
-              <option value="ENTRADA">Entrada</option>
-              <option value="SAIDA">Saída</option>
+              <option value="1">Janeiro</option>
+              <option value="2">Fevereiro</option>
+              <option value="3">Março</option>
+              <option value="4">Abril</option>
+              <option value="5">Maio</option>
+              <option value="6">Junho</option>
+              <option value="7">Julho</option>
+              <option value="8">Agosto</option>
+              <option value="9">Setembro</option>
+              <option value="10">Outubro</option>
+              <option value="11">Novembro</option>
+              <option value="12">Dezembro</option>
             </select>
           </label>
 
-          <button type="submit">
-            {salvando ? "Salvando..." : "Cadastrar transação"}
+          <button
+            type="button"
+            onClick={carregarTransacoes}
+            disabled={carregando || salvando}
+          >
+            {carregando ? "Carregando..." : "Consultar"}
           </button>
-        </fieldset>
+        </div>
+      </section>
 
-        {erroCadastro && <p role="alert">{erroCadastro}</p>}
-        {sucessoCadastro && <p role="status">{sucessoCadastro}</p>}
-      </form>
+      {erro && (
+        <p className="mensagem erro" role="alert">
+          {erro}
+        </p>
+      )}
+
+      {/* Cada cartão usa um campo do objeto recebido do Spring. */}
+      {resumo !== null && (
+        <section className="resumo" aria-label="Resumo do período">
+          <article className="cartao entrada">
+            <p>Total de entradas</p>
+            <strong>{formatarMoeda(resumo.totalEntradas)}</strong>
+          </article>
+
+          <article className="cartao saida">
+            <p>Total de saídas</p>
+            <strong>{formatarMoeda(resumo.totalSaidas)}</strong>
+          </article>
+
+          <article className="cartao saldo">
+            <p>Saldo do período</p>
+            <strong className={resumo.saldo < 0 ? "negativo" : ""}>
+              {formatarMoeda(resumo.saldo)}
+            </strong>
+          </article>
+        </section>
+      )}
+
+      {/* O CSS organiza estas duas áreas em colunas nas telas maiores. */}
+      <div className="conteudo">
+        <section
+          className="painel movimentacoes"
+          aria-labelledby="titulo-transacoes"
+          aria-busy={carregando}
+        >
+          <h2 id="titulo-transacoes">Movimentações</h2>
+          <p className="texto-secundario">Registros do período selecionado.</p>
+
+          {carregando && (
+            <p className="estado" role="status">
+              Carregando transações e resumo...
+            </p>
+          )}
+
+          {!carregando && transacoes === null && (
+            <p className="estado">
+              {erro
+                ? "Confira a mensagem acima e tente consultar novamente."
+                : "Escolha um período e clique em Consultar."}
+            </p>
+          )}
+
+          {transacoes !== null &&
+            (transacoes.length === 0 ? (
+              <p className="estado">Nenhuma transação encontrada neste mês.</p>
+            ) : (
+              <div
+                className="tabela-rolagem"
+                role="region"
+                aria-label="Tabela de transações"
+                tabIndex={0}
+              >
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">Data</th>
+                      <th scope="col">Descrição</th>
+                      <th scope="col">Tipo</th>
+                      <th scope="col">Valor</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {transacoes.map((transacao) => (
+                      <tr key={transacao.id}>
+                        <td>{formatarData(transacao.data)}</td>
+                        <td className="descricao">{transacao.descricao}</td>
+                        <td>
+                          <span
+                            className={
+                              transacao.tipo === "ENTRADA"
+                                ? "tipo entrada"
+                                : "tipo saida"
+                            }
+                          >
+                            {transacao.tipo === "ENTRADA" ? "Entrada" : "Saída"}
+                          </span>
+                        </td>
+                        <td>{formatarMoeda(transacao.valor)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ))}
+        </section>
+
+        <form
+          className="painel formulario"
+          onSubmit={criarTransacao}
+          aria-busy={salvando}
+        >
+          <fieldset className="cadastro" disabled={salvando || carregando}>
+            <legend>Nova transação</legend>
+
+            <label>
+              Descrição
+              <input
+                type="text"
+                value={descricao}
+                onChange={(evento) => setDescricao(evento.target.value)}
+                placeholder="Ex.: compra no mercado"
+                maxLength={255}
+                required
+              />
+            </label>
+
+            <label>
+              Valor (R$)
+              <input
+                type="number"
+                value={valor}
+                onChange={(evento) => setValor(evento.target.value)}
+                placeholder="0,00"
+                min="0.01"
+                max="9999999999.99"
+                step="0.01"
+                required
+              />
+            </label>
+
+            <label>
+              Data
+              <input
+                type="date"
+                value={data}
+                onChange={(evento) => setData(evento.target.value)}
+                min="0001-01-01"
+                max="9999-12-31"
+                required
+              />
+            </label>
+
+            <label>
+              Tipo
+              <select
+                value={tipo}
+                onChange={(evento) => setTipo(evento.target.value)}
+              >
+                <option value="ENTRADA">Entrada</option>
+                <option value="SAIDA">Saída</option>
+              </select>
+            </label>
+
+            <button type="submit">
+              {salvando ? "Salvando..." : "Cadastrar transação"}
+            </button>
+          </fieldset>
+
+          {erroCadastro && (
+            <p className="mensagem erro" role="alert">
+              {erroCadastro}
+            </p>
+          )}
+          {sucessoCadastro && (
+            <p className="mensagem sucesso" role="status">
+              {sucessoCadastro}
+            </p>
+          )}
+        </form>
+      </div>
     </main>
   );
 }
