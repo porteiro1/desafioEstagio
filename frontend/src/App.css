@@ -1,212 +1,322 @@
-.counter {
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 2px solid transparent;
-  transition: border-color 0.3s;
-  margin-bottom: 24px;
-
-  &:hover {
-    border-color: var(--accent-border);
-  }
-  &:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
+/* Estrutura geral da página. */
+.pagina {
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 40px 0 56px;
 }
 
-.hero {
-  position: relative;
-
-  .base,
-  .framework,
-  .vite {
-    inset-inline: 0;
-    margin: 0 auto;
-  }
-
-  .base {
-    width: 170px;
-    position: relative;
-    z-index: 0;
-  }
-
-  .framework,
-  .vite {
-    position: absolute;
-  }
-
-  .framework {
-    z-index: 1;
-    top: 34px;
-    height: 28px;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
-      scale(1.4);
-  }
-
-  .vite {
-    z-index: 0;
-    top: 107px;
-    height: 26px;
-    width: auto;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
-      scale(0.8);
-  }
+.cabecalho {
+  margin-bottom: 28px;
 }
 
-#center {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  place-content: center;
-  place-items: center;
-  flex-grow: 1;
-
-  @media (max-width: 1024px) {
-    padding: 32px 20px 24px;
-    gap: 18px;
-  }
+.sobretitulo {
+  margin: 0 0 10px;
+  color: var(--verde);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
-#next-steps {
-  display: flex;
-  border-top: 1px solid var(--border);
-  text-align: left;
-
-  & > div {
-    flex: 1 1 0;
-    padding: 32px;
-    @media (max-width: 1024px) {
-      padding: 24px 20px;
-    }
-  }
-
-  .icon {
-    margin-bottom: 16px;
-    width: 22px;
-    height: 22px;
-  }
-
-  @media (max-width: 1024px) {
-    flex-direction: column;
-    text-align: center;
-  }
+.cabecalho h1 {
+  margin: 0 0 8px;
+  font-size: clamp(1.8rem, 3.4vw, 2.5rem);
+  line-height: 1.15;
+  letter-spacing: -0.035em;
 }
 
-#docs {
-  border-right: 1px solid var(--border);
-
-  @media (max-width: 1024px) {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
+h2 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 650;
 }
 
-#next-steps ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  gap: 8px;
-  margin: 32px 0 0;
-
-  .logo {
-    height: 18px;
-  }
-
-  a {
-    color: var(--text-h);
-    font-size: 16px;
-    border-radius: 6px;
-    background: var(--social-bg);
-    display: flex;
-    padding: 6px 12px;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    transition: box-shadow 0.3s;
-
-    &:hover {
-      box-shadow: var(--shadow);
-    }
-    .button-icon {
-      height: 18px;
-      width: 18px;
-    }
-  }
-
-  @media (max-width: 1024px) {
-    margin-top: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    li {
-      flex: 1 1 calc(50% - 8px);
-    }
-
-    a {
-      width: 100%;
-      justify-content: center;
-      box-sizing: border-box;
-    }
-  }
+.texto-secundario {
+  margin: 8px 0 0;
+  color: var(--texto-secundario);
+  font-size: 0.9rem;
 }
 
-#spacer {
-  height: 88px;
-  border-top: 1px solid var(--border);
-  @media (max-width: 1024px) {
-    height: 48px;
-  }
+.painel {
+  min-width: 0;
+  padding: 24px;
+  border: 1px solid var(--borda);
+  border-radius: 16px;
+  background: var(--superficie);
 }
 
-.ticks {
-  position: relative;
+/* Filtros: a descrição fica à esquerda; os campos, à direita. */
+.filtros {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  align-items: center;
+  gap: 24px;
+}
+
+.filtros-campos {
+  display: grid;
+  grid-template-columns: 110px minmax(140px, 1fr) auto;
+  align-items: end;
+  gap: 12px;
+}
+
+label {
+  display: grid;
+  min-width: 0;
+  gap: 7px;
+  color: var(--texto-secundario);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+input,
+select {
   width: 100%;
-
-  &::before,
-  &::after {
-    content: "";
-    position: absolute;
-    top: -4.5px;
-    border: 5px solid transparent;
-  }
-
-  &::before {
-    left: 0;
-    border-left-color: var(--border);
-  }
-  &::after {
-    right: 0;
-    border-right-color: var(--border);
-  }
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--borda);
+  border-radius: 9px;
+  background: var(--fundo);
+  color: var(--texto);
 }
+
+input::placeholder {
+  color: #8291a7;
+}
+
+button {
+  min-height: 44px;
+  padding: 11px 18px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: var(--verde);
+  color: #09271d;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  background: #8cecc6;
+}
+
+button:disabled,
+input:disabled,
+select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+.tabela-rolagem:focus-visible {
+  outline: 3px solid var(--azul);
+  outline-offset: 3px;
+}
+
+/* Três colunas para os totais recebidos do backend. */
+.resumo {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.cartao {
+  min-width: 0;
+  padding: 22px;
+  border: 1px solid var(--borda);
+  border-radius: 14px;
+  background: var(--superficie);
+}
+
+.cartao p {
+  margin: 0 0 10px;
+  color: var(--texto-secundario);
+  font-size: 0.875rem;
+}
+
+.cartao strong {
+  display: block;
+  font-size: clamp(1.25rem, 2.4vw, 1.9rem);
+  font-weight: 650;
+  line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.cartao.entrada strong {
+  color: var(--verde);
+}
+
+.cartao.saida strong,
+.cartao.saldo strong.negativo {
+  color: var(--vermelho);
+}
+
+.cartao.saldo strong {
+  color: var(--azul);
+}
+
+/* Tabela e cadastro dividem o espaço nas telas maiores. */
+.conteudo {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(300px, 1fr);
+  align-items: start;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.estado {
+  margin: 24px 0 0;
+  padding: 28px 16px;
+  border: 1px dashed var(--borda);
+  border-radius: 10px;
+  color: var(--texto-secundario);
+  text-align: center;
+}
+
+.tabela-rolagem {
+  max-width: 100%;
+  margin-top: 22px;
+  overflow-x: auto;
+  border-radius: 8px;
+}
+
 table {
   width: 100%;
-  margin-top: 24px;
+  min-width: 530px;
   border-collapse: collapse;
+  font-size: 0.875rem;
 }
 
 th,
 td {
-  padding: 12px;
-  border-bottom: 1px solid #888;
+  padding: 14px 10px;
+  border-bottom: 1px solid var(--borda);
   text-align: left;
+  vertical-align: middle;
+}
+
+th {
+  background: var(--fundo);
+  color: var(--texto-secundario);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+td:first-child,
+th:last-child,
+td:last-child {
+  white-space: nowrap;
 }
 
 th:last-child,
 td:last-child {
   text-align: right;
-}
-.cadastro {
-  display: grid;
-  gap: 12px;
-  margin-top: 24px;
-  text-align: left;
+  font-variant-numeric: tabular-nums;
 }
 
-.cadastro label {
+td.descricao {
+  min-width: 140px;
+  max-width: 320px;
+  overflow-wrap: anywhere;
+}
+
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.tipo {
+  display: inline-block;
+  padding: 4px 9px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.tipo.entrada {
+  background: #66e2b314;
+  color: var(--verde);
+}
+
+.tipo.saida {
+  background: #ff9fa714;
+  color: var(--vermelho);
+}
+
+/* Campos e mensagens do cadastro. */
+.cadastro {
   display: grid;
-  gap: 4px;
-}}
+  min-width: 0;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.cadastro legend {
+  margin-bottom: 20px;
+  padding: 0;
+  font-size: 1.125rem;
+  font-weight: 650;
+}
+
+.cadastro button {
+  margin-top: 4px;
+}
+
+.mensagem {
+  margin: 16px 0 0;
+  padding: 12px 14px;
+  border: 1px solid;
+  border-radius: 9px;
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+}
+
+.mensagem.erro {
+  border-color: #ff9fa747;
+  background: #ff9fa70d;
+  color: var(--vermelho);
+}
+
+.mensagem.sucesso {
+  border-color: #66e2b347;
+  background: #66e2b30d;
+  color: var(--verde);
+}
+
+/* Em telas menores, as áreas passam a ocupar uma coluna. */
+@media (max-width: 960px) {
+  .filtros,
+  .conteudo {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .pagina {
+    width: calc(100% - 32px);
+    padding: 28px 0 36px;
+  }
+
+  .painel,
+  .cartao {
+    padding: 18px;
+  }
+
+  .filtros-campos,
+  .resumo {
+    grid-template-columns: 1fr;
+  }
+
+  .filtros {
+    gap: 18px;
+  }
+
+  .resumo {
+    gap: 12px;
+  }
+}
